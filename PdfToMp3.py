@@ -35,6 +35,16 @@ def TTS(aText, aLanguage, aOutputFile):
     with open(aOutputFile + ".mp3", "wb") as out:
         out.write(response.audio_content)
 
+def PatchGerman(text: str) -> str:
+    text = text.replace(" ¨o", "ö")
+    text = text.replace(" ¨u", "ü")
+    text = text.replace(" ¨a", "ä")
+    text = text.replace(" ¨A", "Ä")
+    text = text.replace(" ¨O", "Ö")
+    text = text.replace(" ¨U", "Ü")
+    text = text.replace("ß", "ss")
+    return text
+
 def PatchMathNotation(text: str) -> str:
     text = text.replace(":=", " ist die Menge aller ")
     text = text.replace("/braceleftigg", " mit den folgenden Fällen ")
@@ -76,6 +86,7 @@ def main():
     argpars.add_argument("--at", type=int, help="the page number to start from. default ='1'")
     argpars.add_argument("--to", type=int, help="the page number to end at. default = 'pdf pagecount'")
     argpars.add_argument("--use", choices=["Text", "Translate", "Cloud"], nargs='+', help="the strategy to use for the text from the pdf. default = '[Translate]'")
+    argpars.add_argument("--patch", choices=["De", "DeMath"], nargs='*', help="specifies which text replacments shall happon. default = '[]'")
     argpars.add_argument("path", type=str, help="the path to the pdf to be converted")
 
     args = argpars.parse_args()
@@ -107,6 +118,10 @@ def main():
     if not args.language:
         args.language = "de-DE"
         print("default value 'language':", args.language)
+
+    if not args.patch:
+        args.patch = []
+        print("no patch is chosen")
     
     if len(args.language) != 5 or args.language[2] != '-' or any(c for c in args.language[:2] if c.isupper()) or any(c for c in args.language[3:] if c.islower()):
         print("invalid format of '" + args.language + "' using default value 'language':", "de-DE")
@@ -129,7 +144,11 @@ def main():
         print("[", pageNum, ":", args.to, "]")
         page = pdfReader.pages[pageNum - 1].extract_text()
         text = page.strip().replace("\n", " ")
-        text = PatchMathNotation(text)
+        if "De" in args.patch:
+            text = PatchGerman(text)
+        if "DeMath" in args.patch:
+            text = PatchMathNotation(text)
+
         outPath = os.path.join(args.out, str(pageNum));
         if "Text" in args.use:
             with open(outPath + ".txt", "w", encoding="utf-8") as out:
