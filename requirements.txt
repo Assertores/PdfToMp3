@@ -1,0 +1,3 @@
+PyPDF2==2.12.1
+google-cloud-texttospeech
+gtts
