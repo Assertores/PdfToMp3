@@ -139,11 +139,16 @@ def main():
         print("default output to:", os.path.abspath(args.out))
     os.makedirs(args.out,exist_ok=True)
 
+    hasDoneSomething = False
     print("start convertion:", args.at, ":", args.to)
     for pageNum in range(args.at, min(args.to, len(pdfReader.pages)) + 1):
         print("[", pageNum, ":", args.to, "]")
         page = pdfReader.pages[pageNum - 1].extract_text()
         text = page.strip().replace("\n", " ")
+        if not text:
+            continue
+        hasDoneSomething = True
+
         if "De" in args.patch:
             text = PatchGerman(text)
         if "DeMath" in args.patch:
@@ -165,6 +170,8 @@ def main():
 
         if "Cloud" in args.use:
             TTS(text, args.language, outPath)
+    if not hasDoneSomething:
+        eprint("ERROR The pdf was compleatly empty")
 
     print("DONE")
 
