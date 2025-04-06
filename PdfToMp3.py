@@ -42,6 +42,12 @@ def PatchGerman(text: str) -> str:
     text = text.replace(" ¨A", "Ä")
     text = text.replace(" ¨O", "Ö")
     text = text.replace(" ¨U", "Ü")
+    text = text.replace("¨o", "ö")
+    text = text.replace("¨u", "ü")
+    text = text.replace("¨a", "ä")
+    text = text.replace("¨A", "Ä")
+    text = text.replace("¨O", "Ö")
+    text = text.replace("¨U", "Ü")
     text = text.replace("ß", "ss")
     return text
 
@@ -50,6 +56,7 @@ def PatchMathNotation(text: str) -> str:
     text = text.replace("/braceleftigg", " mit den folgenden Fällen ")
     text = text.replace("∝⇕⊣√∫⊔≀→", " wird abgebildet auf ")
     text = text.replace("/summationdisplay", " Summe ")
+    text = text.replace("ˆ =", " Entspricht ")
     text = text.replace('̸=', " Ungleich ")
     text = text.replace('̸∈', " nicht Element von ")
 
@@ -74,6 +81,9 @@ def PatchMathNotation(text: str) -> str:
     text = text.replace('Σ', " Summe ")
     text = text.replace('≥', " Größer oder Gleich ")
     text = text.replace('≤', " Kleiner oder Gleich ")
+    text = text.replace('∧', " Logisches und ")
+    text = text.replace('∨', " Logisches oder ")
+    text = text.replace('⊕', " Exklusiv oder ")
     return text
 
 def main():
